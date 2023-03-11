@@ -16,15 +16,17 @@ public class VerificationPage {
         codeField.shouldBe(visible);
     }
 
-    public DashboardObject validVerify() {
-        codeField.setValue(DataHelper.getCorrectCode());
+    public void verification(String code) {
+        codeField.setValue(code);
         verifyButton.click();
+    }
+
+    public DashboardObject validVerify(String code) {
+        verification(code);
         return new DashboardObject();
     }
 
-    public void invalidVerify() {
-        codeField.setValue(DataHelper.getIncorrectCode());
-        verifyButton.click();
+    public void findErrorNotificationMessage() {
         verifyError.shouldBe(visible);
     }
 }

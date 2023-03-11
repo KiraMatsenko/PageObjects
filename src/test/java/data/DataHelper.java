@@ -1,10 +1,7 @@
 package data;
 
-import lombok.Data;
 import lombok.Value;
-import lombok.experimental.UtilityClass;
 
-@Data
 public class DataHelper {
 
     @Value
@@ -25,8 +22,6 @@ public class DataHelper {
         return new UserInfo("kolya", "123qwerty");
     }
 
-    private String code;
-
     public static String getCorrectCode() {
         return new String("12345");
     }
@@ -34,8 +29,6 @@ public class DataHelper {
     public static String getIncorrectCode() {
         return new String("54321");
     }
-
-    private String cardNumber;
 
     public static String getCard1() {
         return new String("5559 0000 0000 0001");

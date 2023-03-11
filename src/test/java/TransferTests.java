@@ -1,6 +1,7 @@
 import com.codeborne.selenide.Configuration;
 import data.DataHelper;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import page.DashboardObject;
 import page.LoginObject;
@@ -13,45 +14,45 @@ public class TransferTests {
 
     @Test
     void shouldGetErrorLogin() {
-        open("http://localhost:7777/");
-        Configuration.holdBrowserOpen = true;
-        LoginObject loginPage = new LoginObject();
-        LoginObject login = loginPage.invalidLogin(DataHelper.invalidUser());
+        LoginObject loginPage = open("http://localhost:7777/", LoginObject.class);
+        loginPage.invalidLogin(DataHelper.invalidUser());
     }
 
     @Test
     void shouldGetErrorVerify() {
-        open("http://localhost:7777/");
-        Configuration.holdBrowserOpen = true;
-        VerificationPage verify = new LoginObject().validLogin(DataHelper.validUser());
-        verify.invalidVerify();
+        LoginObject loginPage = open("http://localhost:7777/", LoginObject.class);
+        VerificationPage verificationPage = loginPage.validLogin(DataHelper.validUser());
+        verificationPage.verification("12346");
+        verificationPage.findErrorNotificationMessage();
     }
 
     @Test
     void shouldGetMoneySuccess1() {
-        open("http://localhost:7777/");
-        Configuration.holdBrowserOpen = true;
-        VerificationPage login = new LoginObject().validLogin(DataHelper.validUser());
-        DashboardObject verify = new VerificationPage().validVerify();
-        DashboardObject replenishInfo = new DashboardObject().selectReplenish1().inputSum("100").inputCard(DataHelper.getCard2());
-        int toBalance = replenishInfo.getFirstCardBalance();
-        int fromBalance = replenishInfo.getSecondCardBalance();
-        DashboardObject replenish = new ReplenishObject().replenishButton();
-        Assertions.assertEquals(toBalance + 100, replenishInfo.getFirstCardBalance());
-        Assertions.assertEquals(fromBalance - 100, replenishInfo.getSecondCardBalance());
+        LoginObject loginPage = open("http://localhost:7777/", LoginObject.class);
+        VerificationPage verificationPage = loginPage.validLogin(DataHelper.validUser());
+        DashboardObject dashboardPage = verificationPage.validVerify(DataHelper.getCorrectCode());
+        int toBalance = dashboardPage.getFirstCardBalance();
+        int fromBalance = dashboardPage.getSecondCardBalance();
+        ReplenishObject replenishPage = dashboardPage.selectReplenish1();
+        replenishPage.inputSum("100");
+        replenishPage.inputCard(DataHelper.getCard2());
+        replenishPage.replenishButton();
+        Assertions.assertEquals(toBalance + 100, dashboardPage.getFirstCardBalance());
+        Assertions.assertEquals(fromBalance - 100, dashboardPage.getSecondCardBalance());
     }
 
     @Test
     void shouldGetMoneySuccess2() {
-        open("http://localhost:7777/");
-        Configuration.holdBrowserOpen = true;
-        VerificationPage login = new LoginObject().validLogin(DataHelper.validUser());
-        DashboardObject verify = new VerificationPage().validVerify();
-        DashboardObject replenishInfo = new DashboardObject().selectReplenish2().inputSum("100").inputCard(DataHelper.getCard1());
-        int toBalance = replenishInfo.getSecondCardBalance();
-        int fromBalance = replenishInfo.getFirstCardBalance();
-        DashboardObject replenish = new ReplenishObject().replenishButton();
-        Assertions.assertEquals(toBalance + 100, replenishInfo.getSecondCardBalance());
-        Assertions.assertEquals(fromBalance - 100, replenishInfo.getFirstCardBalance());
+        LoginObject loginPage = open("http://localhost:7777/", LoginObject.class);
+        VerificationPage verificationPage = loginPage.validLogin(DataHelper.validUser());
+        DashboardObject dashboardPage = verificationPage.validVerify(DataHelper.getCorrectCode());
+        int toBalance = dashboardPage.getFirstCardBalance();
+        int fromBalance = dashboardPage.getSecondCardBalance();
+        ReplenishObject replenishPage = dashboardPage.selectReplenish2();
+        replenishPage.inputSum("100");
+        replenishPage.inputCard(DataHelper.getCard1());
+        replenishPage.replenishButton();
+        Assertions.assertEquals(toBalance + 100, dashboardPage.getSecondCardBalance());
+        Assertions.assertEquals(fromBalance - 100, dashboardPage.getFirstCardBalance());
     }
 }

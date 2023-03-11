@@ -13,18 +13,19 @@ public class LoginObject {
     private SelenideElement loginButton = $("button[data-test-id='action-login']");
     private SelenideElement errorNotification = $("div[data-test-id='error-notification']");
 
-    public VerificationPage validLogin(DataHelper.UserInfo user) {
+    public void login(DataHelper.UserInfo user) {
         loginField.setValue(user.getLogin());
         passwordField.setValue(user.getPassword());
         loginButton.click();
+    }
+
+    public VerificationPage validLogin(DataHelper.UserInfo user) {
+        login(user);
         return new VerificationPage();
     }
 
-    public LoginObject invalidLogin(DataHelper.UserInfo user) {
-        loginField.setValue(user.getLogin());
-        passwordField.setValue(user.getPassword());
-        loginButton.click();
+    public void invalidLogin(DataHelper.UserInfo user) {
+        login(user);
         errorNotification.shouldBe(Condition.visible);
-        return new LoginObject();
     }
 }
